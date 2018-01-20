@@ -24914,6 +24914,12 @@
 	      }, {
 	        id: 2,
 	        text: 'Clean the yard'
+	      }, {
+	        id: 3,
+	        text: 'Leave mail on porch'
+	      }, {
+	        id: 4,
+	        text: 'Play video games'
 	      }]
 	    };
 	  },
@@ -24948,7 +24954,7 @@
 
 	    var renderTodos = function renderTodos() {
 	      return todos.map(function (todo) {
-	        return React.createElement(Todo, { key: todo.id });
+	        return React.createElement(Todo, todo);
 	      });
 	    };
 
@@ -24974,10 +24980,17 @@
 	  displayName: 'Todo',
 
 	  render: function render() {
+	    var _props = this.props,
+	        id = _props.id,
+	        text = _props.text;
+
+
 	    return React.createElement(
 	      'div',
 	      null,
-	      'test'
+	      id,
+	      '. ',
+	      text
 	    );
 	  }
 	});
