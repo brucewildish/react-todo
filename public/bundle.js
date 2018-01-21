@@ -24917,16 +24917,20 @@
 	      searchText: '',
 	      todos: [{
 	        id: uuid(),
-	        text: 'Walk the dog'
+	        text: 'Walk the dog',
+	        completed: false
 	      }, {
 	        id: uuid(),
-	        text: 'Clean the yard'
+	        text: 'Clean the yard',
+	        completed: true
 	      }, {
 	        id: uuid(),
-	        text: 'Leave mail on porch'
+	        text: 'Leave mail on porch',
+	        completed: true
 	      }, {
 	        id: uuid(),
-	        text: 'Play video games'
+	        text: 'Play video games',
+	        completed: false
 	      }]
 	    };
 	  },
@@ -24934,9 +24938,21 @@
 	    this.setState({
 	      todos: [].concat(_toConsumableArray(this.state.todos), [{
 	        id: uuid(),
-	        text: text
+	        text: text,
+	        completed: false
 	      }])
 	    });
+	  },
+	  handleToggle: function handleToggle(id) {
+	    var updatedTodos = this.state.todos.map(function (todo) {
+	      if (todo.id === id) {
+	        todo.completed = !todo.completed;
+	      }
+
+	      return todo;
+	    });
+
+	    this.setState({ todos: updatedTodos });
 	  },
 	  handleSearch: function handleSearch(showCompleted, searchText) {
 	    this.setState({
@@ -24952,7 +24968,7 @@
 	      'div',
 	      null,
 	      React.createElement(TodoSearch, { onSearch: this.handleSearch }),
-	      React.createElement(TodoList, { todos: todos }),
+	      React.createElement(TodoList, { todos: todos, onToggle: this.handleToggle }),
 	      React.createElement(AddTodo, { onAddTodo: this.handleAddTodo })
 	    );
 	  }
@@ -24975,11 +24991,13 @@
 	  displayName: 'TodoList',
 
 	  render: function render() {
+	    var _this = this;
+
 	    var todos = this.props.todos;
 
 	    var renderTodos = function renderTodos() {
 	      return todos.map(function (todo) {
-	        return React.createElement(Todo, _extends({ key: todo.id }, todo));
+	        return React.createElement(Todo, _extends({ key: todo.id }, todo, { onToggle: _this.props.onToggle }));
 	      });
 	    };
 
@@ -24997,24 +25015,28 @@
 /* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var React = __webpack_require__(8);
 
 	var Todo = React.createClass({
-	  displayName: 'Todo',
+	  displayName: "Todo",
 
 	  render: function render() {
+	    var _this = this;
+
 	    var _props = this.props,
 	        id = _props.id,
-	        text = _props.text;
+	        text = _props.text,
+	        completed = _props.completed;
 
 
 	    return React.createElement(
-	      'div',
-	      null,
-	      id,
-	      '. ',
+	      "div",
+	      { onClick: function onClick() {
+	          _this.props.onToggle(id);
+	        } },
+	      React.createElement("input", { type: "checkbox", checked: completed }),
 	      text
 	    );
 	  }
