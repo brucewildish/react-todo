@@ -24950,14 +24950,18 @@
 	    });
 	  },
 	  render: function render() {
-	    var todos = this.state.todos;
+	    var _state = this.state,
+	        todos = _state.todos,
+	        showCompleted = _state.showCompleted,
+	        searchText = _state.searchText;
 
+	    var filteredTodos = TodoAPI.filterTodos(todos, showCompleted, searchText);
 
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(TodoSearch, { onSearch: this.handleSearch }),
-	      React.createElement(TodoList, { todos: todos, onToggle: this.handleToggle }),
+	      React.createElement(TodoList, { todos: filteredTodos, onToggle: this.handleToggle }),
 	      React.createElement(AddTodo, { onAddTodo: this.handleAddTodo })
 	    );
 	  }
@@ -29411,21 +29415,52 @@
 	var $ = __webpack_require__(7);
 
 	module.exports = {
-	    setTodos: function setTodos(todos) {
-	        if ($.isArray(todos)) {
-	            localStorage.setItem('todos', JSON.stringify(todos));
-	            return todos;
-	        }
-	    },
-	    getTodos: function getTodos() {
-	        var stringTodos = localStorage.getItem('todos');
-	        var todos = [];
-	        try {
-	            todos = JSON.parse(stringTodos);
-	        } catch (e) {}
-
-	        return $.isArray(todos) ? todos : [];
+	  setTodos: function setTodos(todos) {
+	    if ($.isArray(todos)) {
+	      localStorage.setItem('todos', JSON.stringify(todos));
+	      return todos;
 	    }
+	  },
+	  getTodos: function getTodos() {
+	    var stringTodos = localStorage.getItem('todos');
+	    var todos = [];
+	    try {
+	      todos = JSON.parse(stringTodos);
+	    } catch (e) {}
+
+	    return $.isArray(todos) ? todos : [];
+	  },
+
+	  filterTodos: function filterTodos(todos, showCompleted, searchText) {
+	    var filteredTodos = todos;
+
+	    // filter by showCompleted: show each todo if it is not completed;
+	    // but if showCompelted is true show completed todos as well (so
+	    // list shows all incomplete todos and only shows the completed
+	    // ones as well whne the show compelte option is checked)
+	    filteredTodos = filteredTodos.filter(function (todo) {
+	      return !todo.completed || showCompleted;
+	    });
+
+	    // filter by SearchTest (tbx in control sets to lower case)
+	    filteredTodos = filteredTodos.filter(function (todo) {
+	      var text = todo.text.toLowerCase();
+	      return searchText.lenth === 0 || text.indexOf(searchText) > -1;
+	    });
+
+	    // Sort todos with non-completed items first
+	    filteredTodos.sort(function (a, b) {
+	      if (!a.completed && b.completed) {
+	        return -1;
+	      } else if (a.completed && !b.completed) {
+	        return 1;
+	      } else {
+	        return 0;
+	      }
+	    });
+
+	    return filteredTodos;
+	  }
 	};
 
 /***/ },
