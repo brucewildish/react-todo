@@ -109,7 +109,7 @@
 	$(document).foundation();
 
 	// App css
-	__webpack_require__(251);
+	__webpack_require__(252);
 
 	ReactDOM.render(React.createElement(TodoApp, null), document.getElementById('app'));
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
@@ -24903,10 +24903,12 @@
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	var React = __webpack_require__(8);
-	var TodoList = __webpack_require__(224);
-	var AddTodo = __webpack_require__(226);
-	var TodoSearch = __webpack_require__(227);
-	var uuid = __webpack_require__(228);
+	var uuid = __webpack_require__(224);
+
+	var TodoList = __webpack_require__(247);
+	var AddTodo = __webpack_require__(249);
+	var TodoSearch = __webpack_require__(250);
+	var TodoAPI = __webpack_require__(251);
 
 	var TodoApp = React.createClass({
 	  displayName: 'TodoApp',
@@ -24915,24 +24917,11 @@
 	    return {
 	      showCompleted: false,
 	      searchText: '',
-	      todos: [{
-	        id: uuid(),
-	        text: 'Walk the dog',
-	        completed: false
-	      }, {
-	        id: uuid(),
-	        text: 'Clean the yard',
-	        completed: true
-	      }, {
-	        id: uuid(),
-	        text: 'Leave mail on porch',
-	        completed: true
-	      }, {
-	        id: uuid(),
-	        text: 'Play video games',
-	        completed: false
-	      }]
+	      todos: TodoAPI.getTodos()
 	    };
+	  },
+	  componentDidUpdate: function componentDidUpdate() {
+	    TodoAPI.setTodos(this.state.todos);
 	  },
 	  handleAddTodo: function handleAddTodo(text) {
 	    this.setState({
@@ -24978,157 +24967,6 @@
 
 /***/ },
 /* 224 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var React = __webpack_require__(8);
-	var Todo = __webpack_require__(225);
-
-	var TodoList = React.createClass({
-	  displayName: 'TodoList',
-
-	  render: function render() {
-	    var _this = this;
-
-	    var todos = this.props.todos;
-
-	    var renderTodos = function renderTodos() {
-	      return todos.map(function (todo) {
-	        return React.createElement(Todo, _extends({ key: todo.id }, todo, { onToggle: _this.props.onToggle }));
-	      });
-	    };
-
-	    return React.createElement(
-	      'div',
-	      null,
-	      renderTodos()
-	    );
-	  }
-	});
-
-	module.exports = TodoList;
-
-/***/ },
-/* 225 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(8);
-
-	var Todo = React.createClass({
-	  displayName: "Todo",
-
-	  render: function render() {
-	    var _this = this;
-
-	    var _props = this.props,
-	        id = _props.id,
-	        text = _props.text,
-	        completed = _props.completed;
-
-
-	    return React.createElement(
-	      "div",
-	      { onClick: function onClick() {
-	          _this.props.onToggle(id);
-	        } },
-	      React.createElement("input", { type: "checkbox", checked: completed }),
-	      text
-	    );
-	  }
-	});
-
-	module.exports = Todo;
-
-/***/ },
-/* 226 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(8);
-
-	var AddTodo = React.createClass({
-	  displayName: 'AddTodo',
-
-	  handleOnSubmit: function handleOnSubmit(e) {
-	    e.preventDefault();
-	    var todotext = this.refs.todoText.value;
-	    if (todotext.length > 0) {
-	      this.refs.todoText.value = '';
-	      this.props.onAddTodo(todotext);
-	    } else {
-	      this.refs.todoText.focus();
-	    }
-	  },
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'form',
-	        { onSubmit: this.handleOnSubmit },
-	        React.createElement('input', { type: 'text', ref: 'todoText', placeholder: 'What do you need to do?' }),
-	        React.createElement(
-	          'button',
-	          { className: 'button expanded' },
-	          'Add Todo'
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = AddTodo;
-
-/***/ },
-/* 227 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(8);
-
-	var TodoSearch = React.createClass({
-	  displayName: "TodoSearch",
-
-	  handleSearch: function handleSearch() {
-	    var showCompleted = this.refs.showCompleted.checked;
-	    var searchText = this.refs.searchText.value;
-
-	    this.props.onSearch(showCompleted, searchText);
-	  },
-	  render: function render() {
-	    return React.createElement(
-	      "div",
-	      null,
-	      React.createElement(
-	        "div",
-	        null,
-	        React.createElement("input", { type: "search", ref: "searchText", placeholder: "Search todos", onChange: this.handleSearch })
-	      ),
-	      React.createElement(
-	        "div",
-	        null,
-	        React.createElement(
-	          "label",
-	          null,
-	          React.createElement("input", { type: "checkbox", ref: "showCompleted", onChange: this.handleSearch }),
-	          "Show completed todos"
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = TodoSearch;
-
-/***/ },
-/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(Buffer) {//     uuid.js
@@ -25189,7 +25027,7 @@
 	    // Moderately fast, high quality
 	    if (true) {
 	      try {
-	        var _rb = __webpack_require__(233).randomBytes;
+	        var _rb = __webpack_require__(229).randomBytes;
 	        _nodeRNG = _rng = _rb && function() {return _rb(16);};
 	        _rng();
 	      } catch(e) {}
@@ -25404,10 +25242,10 @@
 	  }
 	})('undefined' !== typeof window ? window : null);
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(229).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(225).Buffer))
 
 /***/ },
-/* 229 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -25420,9 +25258,9 @@
 
 	'use strict'
 
-	var base64 = __webpack_require__(230)
-	var ieee754 = __webpack_require__(231)
-	var isArray = __webpack_require__(232)
+	var base64 = __webpack_require__(226)
+	var ieee754 = __webpack_require__(227)
+	var isArray = __webpack_require__(228)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -27200,10 +27038,10 @@
 	  return val !== val // eslint-disable-line no-self-compare
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(229).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(225).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 230 */
+/* 226 */
 /***/ function(module, exports) {
 
 	'use strict'
@@ -27323,7 +27161,7 @@
 
 
 /***/ },
-/* 231 */
+/* 227 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -27413,7 +27251,7 @@
 
 
 /***/ },
-/* 232 */
+/* 228 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -27424,10 +27262,10 @@
 
 
 /***/ },
-/* 233 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(234)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(230)
 
 	function error () {
 	  var m = [].slice.call(arguments).join(' ')
@@ -27438,9 +27276,9 @@
 	    ].join('\n'))
 	}
 
-	exports.createHash = __webpack_require__(236)
+	exports.createHash = __webpack_require__(232)
 
-	exports.createHmac = __webpack_require__(248)
+	exports.createHmac = __webpack_require__(244)
 
 	exports.randomBytes = function(size, callback) {
 	  if (callback && callback.call) {
@@ -27461,7 +27299,7 @@
 	  return ['sha1', 'sha256', 'sha512', 'md5', 'rmd160']
 	}
 
-	var p = __webpack_require__(249)(exports)
+	var p = __webpack_require__(245)(exports)
 	exports.pbkdf2 = p.pbkdf2
 	exports.pbkdf2Sync = p.pbkdf2Sync
 
@@ -27481,16 +27319,16 @@
 	  }
 	})
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(229).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(225).Buffer))
 
 /***/ },
-/* 234 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, Buffer) {(function() {
 	  var g = ('undefined' === typeof window ? global : window) || {}
 	  _crypto = (
-	    g.crypto || g.msCrypto || __webpack_require__(235)
+	    g.crypto || g.msCrypto || __webpack_require__(231)
 	  )
 	  module.exports = function(size) {
 	    // Modern Browsers
@@ -27514,22 +27352,22 @@
 	  }
 	}())
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(229).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(225).Buffer))
 
 /***/ },
-/* 235 */
+/* 231 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 236 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(237)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(233)
 
-	var md5 = toConstructor(__webpack_require__(245))
-	var rmd160 = toConstructor(__webpack_require__(247))
+	var md5 = toConstructor(__webpack_require__(241))
+	var rmd160 = toConstructor(__webpack_require__(243))
 
 	function toConstructor (fn) {
 	  return function () {
@@ -27557,10 +27395,10 @@
 	  return createHash(alg)
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(229).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(225).Buffer))
 
 /***/ },
-/* 237 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var exports = module.exports = function (alg) {
@@ -27569,16 +27407,16 @@
 	  return new Alg()
 	}
 
-	var Buffer = __webpack_require__(229).Buffer
-	var Hash   = __webpack_require__(238)(Buffer)
+	var Buffer = __webpack_require__(225).Buffer
+	var Hash   = __webpack_require__(234)(Buffer)
 
-	exports.sha1 = __webpack_require__(239)(Buffer, Hash)
-	exports.sha256 = __webpack_require__(243)(Buffer, Hash)
-	exports.sha512 = __webpack_require__(244)(Buffer, Hash)
+	exports.sha1 = __webpack_require__(235)(Buffer, Hash)
+	exports.sha256 = __webpack_require__(239)(Buffer, Hash)
+	exports.sha512 = __webpack_require__(240)(Buffer, Hash)
 
 
 /***/ },
-/* 238 */
+/* 234 */
 /***/ function(module, exports) {
 
 	module.exports = function (Buffer) {
@@ -27661,7 +27499,7 @@
 
 
 /***/ },
-/* 239 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -27673,7 +27511,7 @@
 	 * See http://pajhome.org.uk/crypt/md5 for details.
 	 */
 
-	var inherits = __webpack_require__(240).inherits
+	var inherits = __webpack_require__(236).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -27805,7 +27643,7 @@
 
 
 /***/ },
-/* 240 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -28333,7 +28171,7 @@
 	}
 	exports.isPrimitive = isPrimitive;
 
-	exports.isBuffer = __webpack_require__(241);
+	exports.isBuffer = __webpack_require__(237);
 
 	function objectToString(o) {
 	  return Object.prototype.toString.call(o);
@@ -28377,7 +28215,7 @@
 	 *     prototype.
 	 * @param {function} superCtor Constructor function to inherit prototype from.
 	 */
-	exports.inherits = __webpack_require__(242);
+	exports.inherits = __webpack_require__(238);
 
 	exports._extend = function(origin, add) {
 	  // Don't do anything if add isn't an object
@@ -28398,7 +28236,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(11)))
 
 /***/ },
-/* 241 */
+/* 237 */
 /***/ function(module, exports) {
 
 	module.exports = function isBuffer(arg) {
@@ -28409,7 +28247,7 @@
 	}
 
 /***/ },
-/* 242 */
+/* 238 */
 /***/ function(module, exports) {
 
 	if (typeof Object.create === 'function') {
@@ -28438,7 +28276,7 @@
 
 
 /***/ },
-/* 243 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -28450,7 +28288,7 @@
 	 *
 	 */
 
-	var inherits = __webpack_require__(240).inherits
+	var inherits = __webpack_require__(236).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -28591,10 +28429,10 @@
 
 
 /***/ },
-/* 244 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var inherits = __webpack_require__(240).inherits
+	var inherits = __webpack_require__(236).inherits
 
 	module.exports = function (Buffer, Hash) {
 	  var K = [
@@ -28841,7 +28679,7 @@
 
 
 /***/ },
-/* 245 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -28853,7 +28691,7 @@
 	 * See http://pajhome.org.uk/crypt/md5 for more info.
 	 */
 
-	var helpers = __webpack_require__(246);
+	var helpers = __webpack_require__(242);
 
 	/*
 	 * Calculate the MD5 of an array of little-endian words, and a bit length
@@ -29002,7 +28840,7 @@
 
 
 /***/ },
-/* 246 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var intSize = 4;
@@ -29040,10 +28878,10 @@
 
 	module.exports = { hash: hash };
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(229).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(225).Buffer))
 
 /***/ },
-/* 247 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {
@@ -29252,13 +29090,13 @@
 
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(229).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(225).Buffer))
 
 /***/ },
-/* 248 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(236)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(232)
 
 	var zeroBuffer = new Buffer(128)
 	zeroBuffer.fill(0)
@@ -29302,13 +29140,13 @@
 	}
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(229).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(225).Buffer))
 
 /***/ },
-/* 249 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var pbkdf2Export = __webpack_require__(250)
+	var pbkdf2Export = __webpack_require__(246)
 
 	module.exports = function (crypto, exports) {
 	  exports = exports || {}
@@ -29323,7 +29161,7 @@
 
 
 /***/ },
-/* 250 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {module.exports = function(crypto) {
@@ -29411,19 +29249,196 @@
 	  }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(229).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(225).Buffer))
+
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var React = __webpack_require__(8);
+	var Todo = __webpack_require__(248);
+
+	var TodoList = React.createClass({
+	  displayName: 'TodoList',
+
+	  render: function render() {
+	    var _this = this;
+
+	    var todos = this.props.todos;
+
+	    var renderTodos = function renderTodos() {
+	      return todos.map(function (todo) {
+	        return React.createElement(Todo, _extends({ key: todo.id }, todo, { onToggle: _this.props.onToggle }));
+	      });
+	    };
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      renderTodos()
+	    );
+	  }
+	});
+
+	module.exports = TodoList;
+
+/***/ },
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(8);
+
+	var Todo = React.createClass({
+	  displayName: "Todo",
+
+	  render: function render() {
+	    var _this = this;
+
+	    var _props = this.props,
+	        id = _props.id,
+	        text = _props.text,
+	        completed = _props.completed;
+
+
+	    return React.createElement(
+	      "div",
+	      { onClick: function onClick() {
+	          _this.props.onToggle(id);
+	        } },
+	      React.createElement("input", { type: "checkbox", checked: completed }),
+	      text
+	    );
+	  }
+	});
+
+	module.exports = Todo;
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(8);
+
+	var AddTodo = React.createClass({
+	  displayName: 'AddTodo',
+
+	  handleOnSubmit: function handleOnSubmit(e) {
+	    e.preventDefault();
+	    var todotext = this.refs.todoText.value;
+	    if (todotext.length > 0) {
+	      this.refs.todoText.value = '';
+	      this.props.onAddTodo(todotext);
+	    } else {
+	      this.refs.todoText.focus();
+	    }
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        { onSubmit: this.handleOnSubmit },
+	        React.createElement('input', { type: 'text', ref: 'todoText', placeholder: 'What do you need to do?' }),
+	        React.createElement(
+	          'button',
+	          { className: 'button expanded' },
+	          'Add Todo'
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = AddTodo;
+
+/***/ },
+/* 250 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(8);
+
+	var TodoSearch = React.createClass({
+	  displayName: "TodoSearch",
+
+	  handleSearch: function handleSearch() {
+	    var showCompleted = this.refs.showCompleted.checked;
+	    var searchText = this.refs.searchText.value;
+
+	    this.props.onSearch(showCompleted, searchText);
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      "div",
+	      null,
+	      React.createElement(
+	        "div",
+	        null,
+	        React.createElement("input", { type: "search", ref: "searchText", placeholder: "Search todos", onChange: this.handleSearch })
+	      ),
+	      React.createElement(
+	        "div",
+	        null,
+	        React.createElement(
+	          "label",
+	          null,
+	          React.createElement("input", { type: "checkbox", ref: "showCompleted", onChange: this.handleSearch }),
+	          "Show completed todos"
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = TodoSearch;
 
 /***/ },
 /* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var $ = __webpack_require__(7);
+
+	module.exports = {
+	    setTodos: function setTodos(todos) {
+	        if ($.isArray(todos)) {
+	            localStorage.setItem('todos', JSON.stringify(todos));
+	            return todos;
+	        }
+	    },
+	    getTodos: function getTodos() {
+	        var stringTodos = localStorage.getItem('todos');
+	        var todos = [];
+	        try {
+	            todos = JSON.parse(stringTodos);
+	        } catch (e) {}
+
+	        return $.isArray(todos) ? todos : [];
+	    }
+	};
+
+/***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(252);
+	var content = __webpack_require__(253);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(254)(content, {});
+	var update = __webpack_require__(255)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -29440,10 +29455,10 @@
 	}
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(253)();
+	exports = module.exports = __webpack_require__(254)();
 	// imports
 
 
@@ -29454,7 +29469,7 @@
 
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports) {
 
 	/*
@@ -29510,7 +29525,7 @@
 
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
