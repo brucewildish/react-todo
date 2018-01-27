@@ -39,7 +39,8 @@ module.exports = {
       {
         loader: 'babel-loader',
         query: {
-        presets: ['react', 'es2015']
+        presets: ['react', 'es2015'],
+        plugins: ['transform-es2015-destructuring', 'transform-object-rest-spread']
         //presets: ['react', 'es2015', 'stage-0']
         },
         test: /\.jsx?$/,
