@@ -45,9 +45,11 @@ describe('Actions', () => {
       // and is an object, without looking at its contents.
       expect(actions.length).toBe(1);
       expect(actions[0]).toBeA('object');
+      // var obj = {type: 'ADD_TODO'};
+      // expect(actions[0]).toInclude(obj);
       // expect(actions[0]).toInclude({
-      //   type: 'ADD_TODO'
-      // });
+      //    type: 'ADD_TODO'
+      //  });
       // expect(actions[0].todo).toInclude({
       //   text: todoText
       // });
