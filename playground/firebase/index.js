@@ -23,18 +23,29 @@ import firebase from 'firebase';
       name: 'Bruce',
       age: 56
     }
-  }).then (() => {
-    console.log('Set worked!');
-  }, (e) => {
-    console.log ('Set did not work!');
-  })
-
-  // firebaseRef.set ({
-  //   appName: "Changed App Name"
-  // });
-
-  firebaseRef.child('app').set ({
-    name: 'Todo App Name',
-    version: '1.0.1'
-
   });
+
+var todosRef = firebaseRef.child('todos');
+
+todosRef.on('child_added', (snapshot) => {
+  console.log('Todo Added', snapshot.key, snapshot.val());
+});
+
+todosRef.push({
+  text: 'Walk the dog!'
+});
+//console.log('ID', todoRef.key);
+
+todosRef.push({
+  text: 'Transfer funds!'
+});
+//console.log('ID', todoRef.key);
+
+
+// notesRef.on('child_changed', (snapshot) => {
+//   console.log('Child changed', snapshot.key, snapshot.val());
+// });
+//
+// notesRef.on('child_removed', (snapshot) => {
+//   console.log('Child Removed', snapshot.key, snapshot.val());
+// });
