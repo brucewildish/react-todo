@@ -8,15 +8,19 @@ var actions = require('actions');
 var store = require('configureStore').configure();
 var TodoAPI = require('TodoAPI');
 
-store.subscribe(() => {
-    // Log every time state changes for tracing purposes
-    var state = store.getState();
-    console.log('New state', state);
-    TodoAPI.setTodos(state.todos);
-});
+// old way of pulling todo collection from local storage
+// store.subscribe(() => {
+//     // Log every time state changes for tracing purposes
+//     var state = store.getState();
+//     console.log('New state', state);
+//     TodoAPI.setTodos(state.todos);
+// });
 
-var initialTodos = TodoAPI.getTodos();
-store.dispatch(actions.addTodos(initialTodos));
+// var initialTodos = TodoAPI.getTodos();
+// store.dispatch(actions.addTodos(initialTodos));
+
+// new way pulls todo collection from firebaseDB
+store.dispatch(actions.startAddTodos());
 
 // Load foundation for styles
 $(document).foundation();

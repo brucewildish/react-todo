@@ -111,15 +111,19 @@
 	var store = __webpack_require__(390).configure();
 	var TodoAPI = __webpack_require__(364);
 
-	store.subscribe(function () {
-	    // Log every time state changes for tracing purposes
-	    var state = store.getState();
-	    console.log('New state', state);
-	    TodoAPI.setTodos(state.todos);
-	});
+	// old way of pulling todo collection from local storage
+	// store.subscribe(() => {
+	//     // Log every time state changes for tracing purposes
+	//     var state = store.getState();
+	//     console.log('New state', state);
+	//     TodoAPI.setTodos(state.todos);
+	// });
 
-	var initialTodos = TodoAPI.getTodos();
-	store.dispatch(actions.addTodos(initialTodos));
+	// var initialTodos = TodoAPI.getTodos();
+	// store.dispatch(actions.addTodos(initialTodos));
+
+	// new way pulls todo collection from firebaseDB
+	store.dispatch(actions.startAddTodos());
 
 	// Load foundation for styles
 	$(document).foundation();
@@ -128,9 +132,9 @@
 	__webpack_require__(393);
 
 	ReactDOM.render(React.createElement(
-	    Provider,
-	    { store: store },
-	    React.createElement(TodoApp, null)
+	  Provider,
+	  { store: store },
+	  React.createElement(TodoApp, null)
 	), document.getElementById('app'));
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
@@ -26728,14 +26732,16 @@
 	        searchText = _props.searchText;
 
 	    var renderTodos = function renderTodos() {
-	      if (todos.length === 0) {
+	      var filteredTodos = TodoAPI.filterTodos(todos, showCompleted, searchText);
+
+	      if (filteredTodos.length === 0) {
 	        return React.createElement(
 	          'p',
 	          { className: 'container__message' },
 	          'Nothing To Do'
 	        );
 	      }
-	      return TodoAPI.filterTodos(todos, showCompleted, searchText).map(function (todo) {
+	      return filteredTodos.map(function (todo) {
 	        return React.createElement(_Todo2.default, _extends({ key: todo.id }, todo));
 	      });
 	    };
@@ -39938,7 +39944,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.startToggleTodo = exports.updateTodo = exports.toggleShowCompleted = exports.addTodos = exports.startAddTodo = exports.addTodo = exports.setSearchText = undefined;
+	exports.startToggleTodo = exports.updateTodo = exports.toggleShowCompleted = exports.startAddTodos = exports.addTodos = exports.startAddTodo = exports.addTodo = exports.setSearchText = undefined;
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //import firebase, {firebaseRef} from 'app/firebase/index';
 
@@ -39989,6 +39995,25 @@
 	  return {
 	    type: 'ADD_TODOS',
 	    todos: todos
+	  };
+	};
+
+	var startAddTodos = exports.startAddTodos = function startAddTodos() {
+	  return function (dispatch, getState) {
+	    var todosRef = _firebase.firebaseRef.child('todos');
+
+	    return todosRef.once('value').then(function (snapshot) {
+	      var todos = snapshot.val() || {};
+	      var parsedTodos = [];
+
+	      Object.keys(todos).forEach(function (todoId) {
+	        parsedTodos.push(_extends({
+	          id: todoId
+	        }, todos[todoId]));
+	      });
+
+	      dispatch(addTodos(parsedTodos));
+	    });
 	  };
 	};
 
@@ -40736,21 +40761,23 @@
 	var $ = __webpack_require__(7);
 
 	module.exports = {
-	  setTodos: function setTodos(todos) {
-	    if ($.isArray(todos)) {
-	      localStorage.setItem('todos', JSON.stringify(todos));
-	      return todos;
-	    }
-	  },
-	  getTodos: function getTodos() {
-	    var stringTodos = localStorage.getItem('todos');
-	    var todos = [];
-	    try {
-	      todos = JSON.parse(stringTodos);
-	    } catch (e) {}
-
-	    return $.isArray(todos) ? todos : [];
-	  },
+	  //   setTodos: function (todos) {
+	  //       if ($.isArray(todos)) {
+	  //           localStorage.setItem('todos', JSON.stringify(todos));
+	  //           return todos;
+	  //       }
+	  //   },
+	  //   getTodos: function () {
+	  //     var stringTodos = localStorage.getItem('todos');
+	  //     var todos = [];
+	  //     try {
+	  //       todos = JSON.parse(stringTodos);
+	  //     } catch (e) {
+	  //
+	  //     }
+	  //
+	  //     return $.isArray(todos) ? todos : [];
+	  //   },
 
 	  filterTodos: function filterTodos(todos, showCompleted, searchText) {
 	    var filteredTodos = todos;
@@ -40762,13 +40789,15 @@
 	    filteredTodos = filteredTodos.filter(function (todo) {
 	      return !todo.completed || showCompleted;
 	    });
-
+	    //
 	    // filter by SearchTest (tbx in control sets to lower case)
 	    filteredTodos = filteredTodos.filter(function (todo) {
-	      var text = todo.text.toLowerCase();
-	      return searchText.lenth === 0 || text.indexOf(searchText) > -1;
+	      // My fix: when todo is underfined was getting wierd errors
+	      //var text = todo.text.toLowerCase();
+	      var text = todo.text != null ? todo.text.toLowerCase() : '';
+	      return searchText.length === 0 || text.indexOf(searchText) > -1;
 	    });
-
+	    //
 	    // Sort todos with non-completed items first
 	    filteredTodos.sort(function (a, b) {
 	      if (!a.completed && b.completed) {
