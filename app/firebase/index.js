@@ -3,12 +3,10 @@ import firebase from 'firebase';
 try {
   // Initialize Firebase DB
     var config = {
-      apiKey: "AIzaSyDFCAU8DlU2ZstCMjneqTiTSuxyC9vnTk4",
-      authDomain: "bmw-todo-app.firebaseapp.com",
-      databaseURL: "https://bmw-todo-app.firebaseio.com",
-      projectId: "bmw-todo-app",
-      storageBucket: "bmw-todo-app.appspot.com",
-      messagingSenderId: "746386111976"
+      apiKey: process.env.API_KEY,
+      authDomain: process.env.AUTH_DOMAIN,
+      databaseURL: process.env.DATABASE_URL,
+      storageBucket: process.env.STORAGE_BUCKET
     };
     firebase.initializeApp(config);
 } catch (e) {
