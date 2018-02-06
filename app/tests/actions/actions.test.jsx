@@ -33,31 +33,6 @@ describe('Actions', () => {
     expect(res).toEqual(action);
   });
 
-  it('should create todo and dispatch ADD_TODO', (done) => {
-    const store = createMockStore({});
-    const todoText = 'My todo item';
-
-    store.dispatch(actions.startAddTodo(todoText)).then(() => {
-      const actions = store.getActions();
-      // WIERD: These tests should work but throw error saying
-      // first arg should be string or array, not an object. This
-      // code is identical to one in video, so it should work.
-      // Opted for simple tests to ensure action was dispatched
-      // and is an object, without looking at its contents.
-      expect(actions.length).toBe(1);
-      expect(actions[0]).toBeA('object');
-      // var obj = {type: 'ADD_TODO'};
-      // expect(actions[0]).toInclude(obj);
-      // expect(actions[0]).toInclude({
-      //    type: 'ADD_TODO'
-      //  });
-      // expect(actions[0].todo).toInclude({
-      //   text: todoText
-      // });
-      done();
-    }).catch(done);
-  });
-
   it('should generate addtodos action', () => {
     var todos = [{
       id: 111,
@@ -118,29 +93,36 @@ describe('Actions', () => {
 
   describe('Tests with firebase todos', () => {
     var testTodoRef;
+    var uid;
+    var todosRef;
 
     beforeEach((done) => {
-      var todosRef = firebaseRef.child('todos');
+      var credential = firebase.auth.GithubAuthProvider.credential(process.env.GITHUB_ACCESS_TOKEN);
 
-      todosRef.remove().then(() => {
-        testTodoRef = firebaseRef.child('todos').push();
+      firebase.auth().signInWithCredential(credential).then((user) => {
+          uid = user.uid;
+          todosRef = firebaseRef.child(`users/${uid}/todos`);
+
+          return todosRef.remove();
+      }).then(() => {
+        testTodoRef = firebaseRef.child(`users/${uid}/todos`).push();
 
         return testTodoRef.set({
           text: 'Something to do',
           completed: false,
           createdAt: 23453453
-        });
+        })
       })
       .then(() => done())
       .catch(done);
     });
 
     afterEach((done) => {
-      testTodoRef.remove().then(() => done());
+      todosRef.remove().then(() => done());
     });
 
     it('should toggle todo and disptach UPDATE_TODO action', (done) => {
-      const store = createMockStore({});
+      const store = createMockStore({auth: {uid}});
       const action = actions.startToggleTodo(testTodoRef.key, true);
 
       store.dispatch(action).then (() => {
@@ -162,7 +144,7 @@ describe('Actions', () => {
     });
 
     it('should populate todos and dispatch ADD_TODOS', (done) => {
-      const store = createMockStore({});
+      const store = createMockStore({auth: {uid}});
       const action = actions.startAddTodos();
 
       store.dispatch(action).then (() => {
@@ -174,6 +156,31 @@ describe('Actions', () => {
 
         done();
       }, done);
+    });
+
+    it('should create todo and dispatch ADD_TODO', (done) => {
+      const store = createMockStore({auth: {uid}});
+      const todoText = 'My todo item';
+
+      store.dispatch(actions.startAddTodo(todoText)).then(() => {
+        const actions = store.getActions();
+        // WIERD: These tests should work but throw error saying
+        // first arg should be string or array, not an object. This
+        // code is identical to one in video, so it should work.
+        // Opted for simple tests to ensure action was dispatched
+        // and is an object, without looking at its contents.
+        expect(actions.length).toBe(1);
+        expect(actions[0]).toBeA('object');
+        // var obj = {type: 'ADD_TODO'};
+        // expect(actions[0]).toInclude(obj);
+        // expect(actions[0]).toInclude({
+        //    type: 'ADD_TODO'
+        //  });
+        // expect(actions[0].todo).toInclude({
+        //   text: todoText
+        // });
+        done();
+      }).catch(done);
     });
   });
 });
