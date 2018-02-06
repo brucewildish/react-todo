@@ -11,6 +11,7 @@ import router from 'app/router/';
 firebase.auth().onAuthStateChanged((user) => {
   if(user) {
     store.dispatch(actions.login(user.uid));
+    store.dispatch(actions.startAddTodos());
     hashHistory.push('/todos');
   } else {
     store.dispatch(actions.logout());
@@ -29,8 +30,8 @@ firebase.auth().onAuthStateChanged((user) => {
 // var initialTodos = TodoAPI.getTodos();
 // store.dispatch(actions.addTodos(initialTodos));
 
-// new way pulls todo collection from firebaseDB
-store.dispatch(actions.startAddTodos());
+// new way pulls todo collection from firebaseDB MOVED ABOVE
+//store.dispatch(actions.startAddTodos());
 
 // Load foundation for styles
 $(document).foundation();
