@@ -98,9 +98,11 @@ describe('Actions', () => {
 
     beforeEach((done) => {
       var credential = firebase.auth.GithubAuthProvider.credential(process.env.GITHUB_ACCESS_TOKEN);
-
-      firebase.auth().signInWithCredential(credential).then((user) => {
+console.log('credential', credential);
+      //firebase.auth().signInWithCredential(credential).then((user) => {
+      firebase.auth().signInAnonymously().then((user) => {
           uid = user.uid;
+          //console.log('uid', uid);
           todosRef = firebaseRef.child(`users/${uid}/todos`);
 
           return todosRef.remove();
