@@ -41,7 +41,8 @@
     "save-dev": "^2.0.0",
     "script-loader": "^0.6.1",
     "style-loader": "^0.13.0",
-    "webpack": "^1.12.13"
+    "webpack": "^1.12.13",
+    "redux-devtools-extension": "^2.13.2"
   },
   "devDependencies": {
     "karma": "^0.13.22",
@@ -50,7 +51,6 @@
     "karma-mocha-reporter": "^2.0.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
-    "mocha": "^2.4.5",
-    "redux-devtools-extension": "^2.13.2"
+    "mocha": "^2.4.5"
   }
 }
